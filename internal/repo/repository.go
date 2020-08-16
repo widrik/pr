@@ -1,16 +1,16 @@
 package repo
 
 import (
-	"github.com/go-sql-driver/mysql"
 	"log"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	proConf "github.com/widrik/pr/internal/config"
 	"github.com/widrik/pr/internal/entities"
 )
 
 type Repository struct {
-	DB     *gorm.DB
+	DB *gorm.DB
 }
 
 func GetRepo(proConf *proConf.Configuration) *Repository {
@@ -22,10 +22,10 @@ func GetRepo(proConf *proConf.Configuration) *Repository {
 
 func (repo *Repository) initDB(proConf *proConf.Configuration) {
 	config := mysql.NewConfig()
-	config.Addr = proConf.Database.Host
-	config.DBName = proConf.Database.Name
-	config.User = proConf.Database.User
-	config.Passwd = proConf.Database.Password
+	config.Addr = proConf.DBHost
+	config.DBName = proConf.DBName
+	config.User = proConf.DBUser
+	config.Passwd = proConf.DBPassword
 	config.Net = "tcp"
 	config.Collation = "utf8mb4_unicode_ci"
 	config.Params = getParams()
@@ -82,7 +82,7 @@ func Migrate(repo *Repository) {
 	}
 }
 
-func getParams()  map[string]string {
+func getParams() map[string]string {
 	params := make(map[string]string)
 	params["charset"] = "utf8mb4"
 

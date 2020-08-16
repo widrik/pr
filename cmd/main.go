@@ -1,29 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/widrik/pr/internal/config"
 	"github.com/widrik/pr/internal/repo"
-	grpcserver "github.com/widrik/pr/internal/server"
+	"github.com/widrik/pr/internal/rotator"
+	"github.com/widrik/pr/internal/server"
 )
 
-const configFile  = "./config/main.json"
-
 func main() {
-	// Config
-	configuration, err := config.Init(configFile)
+	configuration, err := config.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Repository
-	repo := initRepository(&configuration)
+	r := rotator.New(initRepository(configuration))
 
 	serversErrorsCh := make(chan error)
-
-	grpcServer := grpcserver.NewServer(&calenderApp, net.JoinHostPort(configuration.GRPCServer.Host, configuration.GRPCServer.Port))
+	grpcServer := server.New(fmt.Sprintf(":%d", configuration.GrpcPort), r)
 	go func() {
 		if err := grpcServer.Start(); err != nil {
 			serversErrorsCh <- err
@@ -31,6 +30,21 @@ func main() {
 	}()
 	defer grpcServer.Stop()
 
+	signalsCh := make(chan os.Signal, 1)
+	signal.Notify(signalsCh, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case <-signalsCh:
+		signal.Stop(signalsCh)
+
+		return
+	case err = <-serversErrorsCh:
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return
+	}
 }
 
 func initRepository(configuration *config.Configuration) *repo.Repository {

@@ -1,29 +1,28 @@
 package server
 
 import (
-	"github.com/widrik/pr/api/spec"
 	"net"
 
+	"github.com/widrik/pr/api/spec"
 	"github.com/widrik/pr/internal/rotator"
 	"google.golang.org/grpc"
 )
 
 type Server struct {
-	grpcServer	  *grpc.Server
-	rotatorServer *rotator.Server
 	address       string
+	grpcServer    *grpc.Server
 }
 
-func NewServer(r *rotator.Rotator, listenAddress string) *Server {
+func New(address string, r *rotator.Rotator) *Server {
+	srv := &Server{
+		address: address,
+	}
+
+	rotatorClient := rotator.NewRotatorClient(r)
+
 	grpcServer := grpc.NewServer()
-
-	srv := &Server{}
-
-	srv.rotatorServer = rotator.NewServer(r)
+	spec.RegisterRotationServiceServer(grpcServer, rotatorClient)
 	srv.grpcServer = grpcServer
-	srv.address = listenAddress
-
-	spec.RegisterRotationServiceServer(grpcServer, srv.rotatorServer)
 
 	return srv
 }

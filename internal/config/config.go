@@ -2,49 +2,56 @@ package config
 
 import (
 	"errors"
+	"os"
+	"strconv"
 
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
-type GRPCServer struct {
-	Host string
-	Port string
-}
-
-type Database struct {
-	Name     string
-	Host     string
-	Port     int
-	User     string
-	Password string
-}
-
 type Configuration struct {
-	GRPCServer GRPCServer
-	Database   Database
+	GrpcPort     int
+	AMQPHost     string
+	AMQPPort     int
+	AMQPLogin    string
+	AMQPPassword string
+	AMQPVhost    string
+	DBHost       string
+	DBPort       int
+	DBName       string
+	DBUser       string
+	DBPassword   string
 }
 
 var (
-	ErrFilePathEmpty = errors.New("file path is empty")
 	ErrReadFile      = errors.New("can't read file")
+	ErrWithValue      = errors.New("error reading value")
 )
 
-func Init(path string) (Configuration, error) {
-	var configuration Configuration
-
-	if path == "" {
-		return configuration, ErrFilePathEmpty
+func Init() (*Configuration, error) {
+	err := godotenv.Overload()
+	if err != nil {
+		return nil, err
 	}
 
-	viper.SetConfigFile(path)
+	grpcPort, err1 := strconv.Atoi(os.Getenv("GRPC_PORT"))
+	amqpPort, err2 := strconv.Atoi(os.Getenv("AMQP_PORT"))
+	dbPort, err3 := strconv.Atoi(os.Getenv("DB_PORT"))
 
-	if err := viper.ReadInConfig(); err != nil {
-		return configuration, ErrReadFile
+	if err1 != nil || err2 != nil || err3 != nil {
+		return nil, ErrWithValue
 	}
 
-	if err := viper.Unmarshal(&configuration); err != nil {
-		return configuration, ErrReadFile
-	}
-
-	return configuration, nil
+	return &Configuration{
+		GrpcPort:     grpcPort,
+		AMQPHost:     os.Getenv("AMQP_HOST"),
+		AMQPPort:     amqpPort,
+		AMQPLogin:    os.Getenv("AMQP_LOGIN"),
+		AMQPPassword: os.Getenv("AMQP_PASSWORD"),
+		AMQPVhost:    os.Getenv("AMQP_VHOST"),
+		DBHost:       os.Getenv("DB_HOST"),
+		DBPort:       dbPort,
+		DBName:       os.Getenv("DB_DATABASE"),
+		DBUser:       os.Getenv("DB_USERNAME"),
+		DBPassword:   os.Getenv("DB_PASSWORD"),
+	}, nil
 }

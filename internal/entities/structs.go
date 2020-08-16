@@ -27,7 +27,7 @@ type SocialGroup struct {
 type Stats struct {
 	ShowCount     int64 `gorm:"DEFAULT:0"`
 	ClickCount    int64 `gorm:"DEFAULT:0"`
-	BannerID      uint `gorm:"primary_key;auto_increment:false"`
+	BannerID      uint  `gorm:"primary_key;auto_increment:false"`
 	Banner        Banner
 	SlotID        uint `gorm:"primary_key;auto_increment:false"`
 	Slot          Slot

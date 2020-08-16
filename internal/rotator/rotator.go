@@ -103,7 +103,7 @@ func (rotator *Rotator) Get(slotID, socialGroupId uint) (*entities.Banner, error
 		return nil, err
 	}
 
-	state, err := Init(rotator, slot, socialGroup)
+	state, err := InitAlgoritm(rotator, slot, socialGroup)
 	if err != nil {
 		return nil, err
 	}

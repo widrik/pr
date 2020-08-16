@@ -1,4 +1,4 @@
-package main
+package rotator
 
 import (
 	"math/rand"
@@ -7,11 +7,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/widrik/pr/internal/rotator"
 )
 
 func TestUCB1WithNew(t *testing.T) {
-	id := rotator.UCB1(initStateNew())
+	id := UCB1(initStateNew())
 
 	require.Equal(t, 0, id)
 }
@@ -25,7 +24,7 @@ func TestUCB1(t *testing.T) {
 	count1 := 0.0
 
 	for i := 1; i <= 1000; i++ {
-		selectedID := rotator.UCB1(state)
+		selectedID := UCB1(state)
 		selectedArm := state.Arms[selectedID]
 
 		if (selectedID == 0) {
@@ -42,37 +41,37 @@ func TestUCB1(t *testing.T) {
 	assert.Greater(t, count0, count1)
 }
 
-func initStateNew() rotator.State {
-	arms := rotator.Arms{
-		rotator.Arm{
+func initStateNew() State {
+	arms := Arms{
+		Arm{
 			TriesCount:  0,
 			Reward: 1,
 		},
-		rotator.Arm{
+		Arm{
 			TriesCount:  1,
 			Reward: 1,
 		},
 	}
 
-	return rotator.State{
+	return State{
 		Arms: arms,
 		TotalCount: 1,
 	}
 }
 
-func initStateWithTries() rotator.State {
-	arms := rotator.Arms{
-		rotator.Arm{
+func initStateWithTries() State {
+	arms := Arms{
+		Arm{
 			TriesCount:  1,
 			Reward: 1,
 		},
-		rotator.Arm{
+		Arm{
 			TriesCount:  1,
 			Reward: 1,
 		},
 	}
 
-	return rotator.State{
+	return State{
 		Arms: arms,
 		TotalCount: 2,
 	}

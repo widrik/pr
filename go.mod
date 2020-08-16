@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/grpc-ecosystem/grpc-gateway v1.14.7 // indirect
 	github.com/jinzhu/gorm v1.9.16
+	github.com/joho/godotenv v1.3.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	google.golang.org/genproto v0.0.0-20200815001618-f69a88009b70 // indirect

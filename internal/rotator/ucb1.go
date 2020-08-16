@@ -18,7 +18,7 @@ type State struct {
 	TotalCount int64
 }
 
-func Init(rotator *Rotator, slot *entities.Slot, socialGroup *entities.SocialGroup) (State, error) {
+func InitAlgoritm(r *Rotator, slot *entities.Slot, socialGroup *entities.SocialGroup) (State, error) {
 	var totalCount int64
 
 	bannersCount := len(slot.Banners)
@@ -33,7 +33,7 @@ func Init(rotator *Rotator, slot *entities.Slot, socialGroup *entities.SocialGro
 	}
 
 	for _, banner := range slot.Banners {
-		stats, err := rotator.findOrCreateStats(banner.ID, slot.ID, socialGroup.ID)
+		stats, err := r.findOrCreateStats(banner.ID, slot.ID, socialGroup.ID)
 		if err != nil {
 			return state, err
 		}
