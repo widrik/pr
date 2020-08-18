@@ -9,7 +9,7 @@ func (rotator *Rotator) findBanner(bannerID uint) (*entities.Banner, error) {
 	result := rotator.repository.DB.First(banner, bannerID)
 
 	if result.RecordNotFound() || result.Error != nil {
-		return nil, BannerNotFound
+		return nil, ErrBannerNotFound
 	}
 
 	return banner, nil
@@ -20,7 +20,7 @@ func (rotator *Rotator) findSlot(slotID uint) (*entities.Slot, error) {
 	result := rotator.repository.DB.First(slot, slotID)
 
 	if result.RecordNotFound() || result.Error != nil {
-		return nil, SlotNotFound
+		return nil, ErrSlotNotFound
 	}
 
 	return slot, nil
@@ -31,7 +31,7 @@ func (rotator *Rotator) findSocialGroup(socialGroupID uint) (*entities.SocialGro
 	result := rotator.repository.DB.First(socialGroup, socialGroupID)
 
 	if result.RecordNotFound() || result.Error != nil {
-		return nil, SocialGroupNotFound
+		return nil, ErrSocialGroupNotFound
 	}
 
 	return socialGroup, nil
@@ -40,14 +40,14 @@ func (rotator *Rotator) findSocialGroup(socialGroupID uint) (*entities.SocialGro
 func (rotator *Rotator) findOrCreateStats(bannerID, slotID, socialGroupID uint) (*entities.Stats, error) {
 	stats := &entities.Stats{}
 	searchStat := &entities.Stats{
-		BannerID: bannerID,
-		SlotID: slotID,
+		BannerID:      bannerID,
+		SlotID:        slotID,
 		SocialGroupID: socialGroupID,
 	}
 	result := rotator.repository.DB.FirstOrCreate(stats, searchStat)
 
 	if result.Error != nil {
-		return nil, StatsNotFound
+		return nil, ErrStatsNotFound
 	}
 
 	return stats, nil

@@ -22,10 +22,7 @@ type Configuration struct {
 	DBPassword   string
 }
 
-var (
-	ErrReadFile      = errors.New("can't read file")
-	ErrWithValue      = errors.New("error reading value")
-)
+var ErrWithValue = errors.New("error reading value")
 
 func Init() (*Configuration, error) {
 	err := godotenv.Overload()
@@ -51,7 +48,7 @@ func Init() (*Configuration, error) {
 		DBHost:       os.Getenv("DB_HOST"),
 		DBPort:       dbPort,
 		DBName:       os.Getenv("DB_DATABASE"),
-		DBUser:       os.Getenv("DB_USERNAME"),
+		DBUser:       os.Getenv("DB_USER"),
 		DBPassword:   os.Getenv("DB_PASSWORD"),
 	}, nil
 }

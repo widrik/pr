@@ -14,7 +14,6 @@ type Banner struct {
 
 type Slot struct {
 	gorm.Model
-	ID          uint
 	Description string
 	Banners     []*Banner `gorm:"many2many:banner_slots;"`
 }

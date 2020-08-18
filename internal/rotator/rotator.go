@@ -9,12 +9,12 @@ import (
 )
 
 var (
-	SlotNotFound      	= errors.New("slot not found")
-	BannerNotFound      = errors.New("banner not found")
-	SocialGroupNotFound = errors.New("social group not found")
-	StatsNotFound 		= errors.New("stats not found")
-	BannerDeleteError   = errors.New("banner delete error")
-	SlotIsEmpty  	 	= errors.New("slot is empty")
+	ErrSlotNotFound        = errors.New("slot not found")
+	ErrBannerNotFound      = errors.New("banner not found")
+	ErrSocialGroupNotFound = errors.New("social group not found")
+	ErrStatsNotFound       = errors.New("stats not found")
+	ErrBannerDeleteError   = errors.New("banner delete error")
+	ErrSlotIsEmpty         = errors.New("slot is empty")
 )
 
 type Rotator struct {
@@ -30,12 +30,12 @@ func New(repo *repo.Repository) *Rotator {
 func (rotator *Rotator) Add(bannerID, slotID uint) error {
 	banner, err := rotator.findBanner(bannerID)
 	if err != nil {
-		return BannerNotFound
+		return ErrBannerNotFound
 	}
 
 	slot, err := rotator.findSlot(slotID)
 	if err != nil {
-		return SlotNotFound
+		return ErrSlotNotFound
 	}
 
 	rotator.repository.DB.Model(banner).Association("Slots").Append(slot)
@@ -55,13 +55,13 @@ func (rotator *Rotator) Delete(bannerID, slotID uint) error {
 	}
 
 	if rotator.repository.DB.Model(banner).Association("Slots").Delete(slot).Error != nil {
-		return BannerDeleteError
+		return ErrBannerDeleteError
 	}
 
 	return nil
 }
 
-func (rotator *Rotator) Hit(bannerID, slotID, socialGroupId uint) error {
+func (rotator *Rotator) Hit(bannerID, slotID, socialGroupID uint) error {
 	banner, err := rotator.findBanner(bannerID)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (rotator *Rotator) Hit(bannerID, slotID, socialGroupId uint) error {
 		return err
 	}
 
-	stats, err := rotator.findOrCreateStats(banner.ID, slot.ID, socialGroupId)
+	stats, err := rotator.findOrCreateStats(banner.ID, slot.ID, socialGroupID)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,9 @@ func (rotator *Rotator) Hit(bannerID, slotID, socialGroupId uint) error {
 	return nil
 }
 
-func (rotator *Rotator) Get(slotID, socialGroupId uint) (*entities.Banner, error) {
+func (rotator *Rotator) Get(slotID, socialGroupID uint) (*entities.Banner, error) {
+	var err error
+
 	slot, err := rotator.findSlot(slotID)
 	if err != nil {
 		return nil, err
@@ -95,10 +97,10 @@ func (rotator *Rotator) Get(slotID, socialGroupId uint) (*entities.Banner, error
 
 	rotator.repository.DB.Model(slot).Association("Banners").Find(&slot.Banners)
 	if len(slot.Banners) == 0 {
-		return nil, SlotIsEmpty
+		return nil, ErrSlotIsEmpty
 	}
 
-	socialGroup, err := rotator.findSocialGroup(socialGroupId)
+	socialGroup, err := rotator.findSocialGroup(socialGroupID)
 	if err != nil {
 		return nil, err
 	}
@@ -111,12 +113,16 @@ func (rotator *Rotator) Get(slotID, socialGroupId uint) (*entities.Banner, error
 	id := UCB1(state)
 	selectedBanner := slot.Banners[id]
 
-	stats, err := rotator.findOrCreateStats(selectedBanner.ID, slot.ID, socialGroupId)
+	stats, err := rotator.findOrCreateStats(selectedBanner.ID, slot.ID, socialGroupID)
+	if err != nil {
+		return nil, err
+	}
+
 	expr := gorm.Expr("show_count + ?", 1)
 	result := rotator.repository.DB.Model(stats).UpdateColumn("show_count", expr)
 
 	if result.Error != nil {
-		return nil, BannerNotFound
+		return nil, ErrBannerNotFound
 	}
 
 	return slot.Banners[id], nil

@@ -7,6 +7,9 @@ integration-test:
 run-go:
 	go run cmd/main.go
 
+run:
+	go run cmd/main.go
+
 install-deps:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint
 
@@ -28,4 +31,4 @@ install:
 	go install
 
 run-prod:
-	docker-compose -f docker-compose.yml up
+	docker-compose -f config/docker-compose.yml up

@@ -2,6 +2,7 @@ package rotator
 
 import (
 	"context"
+
 	"github.com/widrik/pr/api/spec"
 )
 
@@ -16,39 +17,39 @@ func NewRotatorClient(rotator *Rotator) *Client {
 }
 
 func (client Client) Add(ctx context.Context, request *spec.AddRequest) (*spec.AddResponse, error) {
-	bannerId := uint(request.BannerId)
-	slotId := uint(request.SlotId)
+	bannerID := uint(request.BannerId)
+	slotID := uint(request.SlotId)
 
-	err := client.rotator.Add(bannerId, slotId)
+	err := client.rotator.Add(bannerID, slotID)
 
 	return &spec.AddResponse{}, err
 }
 
 func (client Client) Delete(ctx context.Context, request *spec.DeleteRequest) (*spec.DeleteResponse, error) {
-	bannerId := uint(request.BannerId)
-	slotId := uint(request.SlotId)
+	bannerID := uint(request.BannerId)
+	slotID := uint(request.SlotId)
 
-	err := client.rotator.Delete(bannerId, slotId)
+	err := client.rotator.Delete(bannerID, slotID)
 
 	return &spec.DeleteResponse{}, err
 }
 
 func (client Client) Hit(ctx context.Context, request *spec.HitRequest) (*spec.HitResponse, error) {
-	bannerId := uint(request.BannerId)
-	slotId := uint(request.SlotId)
-	socialGroupId := uint(request.SdgId)
+	bannerID := uint(request.BannerId)
+	slotID := uint(request.SlotId)
+	socialGroupID := uint(request.SdgId)
 
-	err := client.rotator.Hit(bannerId, slotId, socialGroupId)
+	err := client.rotator.Hit(bannerID, slotID, socialGroupID)
 
 	return &spec.HitResponse{}, err
 }
 
 func (client Client) Get(ctx context.Context, request *spec.GetRequest) (*spec.GetResponse, error) {
-	slotId := uint(request.SlotId)
-	socialGroupId := uint(request.SdgId)
+	slotID := uint(request.SlotId)
+	socialGroupID := uint(request.SdgId)
 
-	selectedBanner, err := client.rotator.Get(slotId, socialGroupId)
-	bannerId := uint32(selectedBanner.ID)
+	selectedBanner, err := client.rotator.Get(slotID, socialGroupID)
+	bannerID := uint32(selectedBanner.ID)
 
-	return &spec.GetResponse{BannerId: bannerId}, err
+	return &spec.GetResponse{BannerId: bannerID}, err
 }

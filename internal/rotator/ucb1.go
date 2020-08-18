@@ -28,7 +28,7 @@ func InitAlgoritm(r *Rotator, slot *entities.Slot, socialGroup *entities.SocialG
 	bannerStats := make(map[uint]*entities.Stats)
 
 	state := State{
-		Arms: arms,
+		Arms:       arms,
 		TotalCount: totalCount,
 	}
 
@@ -46,7 +46,7 @@ func InitAlgoritm(r *Rotator, slot *entities.Slot, socialGroup *entities.SocialG
 
 		arms[banner.ID] = newArm
 
-		totalCount+= stats.ShowCount
+		totalCount += stats.ShowCount
 	}
 
 	state.Arms = arms

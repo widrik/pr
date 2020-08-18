@@ -3,44 +3,76 @@
 package rotator
 
 import (
-	"math/rand"
-	"testing"
-	"time"
-
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"testing"
 )
 
-func TestUCB1WithNew(t *testing.T) {
-	id := UCB1(initStateNew())
-
-	require.Equal(t, 0, id)
-}
-
 func TestUCB1(t *testing.T) {
-	state := initStateWithTries()
+	t.Run("New banner was showed", func(t *testing.T) {
+		id := UCB1(initStateNew())
 
-	rand.Seed(time.Now().Unix())
+		assert.Equal(t, 0, id)
+	})
 
-	count0 := 0.0
-	count1 := 0.0
 
-	for i := 1; i <= 1000; i++ {
-		selectedID := UCB1(state)
-		selectedArm := state.Arms[selectedID]
+	t.Run("Banner with greater reward was showed more times", func(t *testing.T) {
+		state := initStateWithTries()
 
-		if (selectedID == 0) {
-			selectedArm.Reward += 10
-			count0++
-		} else {
-			selectedArm.Reward += 1
-			count1++
+		count0 := 0.0
+		count1 := 0.0
+
+		for i := 1; i <= 1000; i++ {
+			selectedID := UCB1(state)
+
+			if (selectedID == 0) {
+				state.Arms[selectedID].Reward += 0.5
+				count0++
+			} else {
+				state.Arms[selectedID].Reward += 0.1
+				count1++
+			}
+
+			state.Arms[selectedID].TriesCount++
 		}
 
-		selectedArm.TriesCount++
-	}
+		assert.Greater(t, count0, count1)
+	})
 
-	assert.Greater(t, count0, count1)
+	t.Run("Banner was showed minimum one time", func(t *testing.T) {
+		state := initStateWithDifferentArms()
+
+		selectedArms := make(map[int]int)
+
+		for i := 1; i <= 1000; i++ {
+			selectedID := UCB1(state)
+			selectedArms[selectedID]++
+
+			state.Arms[selectedID].Reward += 0.5
+			state.Arms[selectedID].TriesCount++
+		}
+
+		for _, arm := range state.Arms {
+			assert.NotEqual(t, arm.TriesCount, 0.0)
+		}
+	})
+
+	t.Run("All banners are new", func(t *testing.T) {
+		state := initStateWithEmptyArms()
+
+		selectedArms := make(map[int]int)
+
+		for i := 1; i <= 1000; i++ {
+			selectedID := UCB1(state)
+			selectedArms[selectedID]++
+
+			state.Arms[selectedID].Reward += 0.5
+			state.Arms[selectedID].TriesCount++
+		}
+
+		for _, arm := range state.Arms {
+			assert.NotEqual(t, arm.TriesCount, 0.0)
+		}
+	})
 }
 
 func initStateNew() State {
@@ -76,5 +108,89 @@ func initStateWithTries() State {
 	return State{
 		Arms: arms,
 		TotalCount: 2,
+	}
+}
+
+func initStateWithDifferentArms() State {
+	arms := Arms{
+		Arm{
+			TriesCount:  10,
+			Reward: 0.8,
+		},
+		Arm{
+			TriesCount:  100,
+			Reward: 0.5,
+		},
+		Arm{
+			TriesCount:  20,
+			Reward: 0.4,
+		},
+		Arm{
+			TriesCount:  30,
+			Reward: 0.1,
+		},
+		Arm{
+			TriesCount:  40,
+			Reward: 0.3,
+		},
+		Arm{
+			TriesCount:  20,
+			Reward: 0.2,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  5,
+			Reward: 0.1,
+		},
+	}
+
+	return State{
+		Arms: arms,
+		TotalCount: 255,
+	}
+}
+
+func initStateWithEmptyArms() State {
+	arms := Arms{
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+		Arm{
+			TriesCount:  0,
+			Reward: 0,
+		},
+	}
+
+	return State{
+		Arms: arms,
+		TotalCount: 0,
 	}
 }

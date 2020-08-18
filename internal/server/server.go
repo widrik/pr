@@ -9,8 +9,8 @@ import (
 )
 
 type Server struct {
-	address       string
-	grpcServer    *grpc.Server
+	address    string
+	grpcServer *grpc.Server
 }
 
 func New(address string, r *rotator.Rotator) *Server {

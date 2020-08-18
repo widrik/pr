@@ -33,6 +33,7 @@ func (repo *Repository) initDB(proConf *proConf.Configuration) {
 
 	db, err := gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
+		log.Fatal(err)
 		log.Fatal("connection failed")
 	}
 	db = db.Set("gorm:table_options", "ENGINE=InnoDB CHARSET=utf8")
