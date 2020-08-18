@@ -4,10 +4,13 @@ unit-test:
 integration-test:
 	go test ./... -v -race -tags=integration
 
-run-go:
-	go run cmd/main.go
+test:
+	go test ./... -v -race -tags=unit
 
 run:
+	go run cmd/main.go
+
+run-go:
 	go run cmd/main.go
 
 install-deps:
@@ -16,10 +19,10 @@ install-deps:
 lint: install-deps
 	golangci-lint run ./...
 
-.PHONY: build
+.PHONY: build test
 
 build:
-	CGO_ENABLED=0 go build -o bin/pr cmd/main.go
+	CGO_ENABLED=0 go build -o bin cmd/main.go
 
 build-dev:
 	go build -o bin/pr cmd/main.go
