@@ -6,7 +6,7 @@ COPY go.sum .
 RUN go mod download
 
 COPY . .
-ENV APP_ROOT /app/
+ENV APP_ROOT /pr/
 RUN make build
 
 FROM alpine:3.11
