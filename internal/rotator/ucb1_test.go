@@ -3,8 +3,9 @@
 package rotator
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUCB1(t *testing.T) {
@@ -54,6 +55,10 @@ func TestUCB1(t *testing.T) {
 		for _, arm := range state.Arms {
 			assert.NotEqual(t, arm.TriesCount, 0.0)
 		}
+
+		for _, arm := range selectedArms {
+			assert.NotEqual(t, arm, 0.0)
+		}
 	})
 
 	t.Run("All banners are new", func(t *testing.T) {
@@ -71,6 +76,24 @@ func TestUCB1(t *testing.T) {
 
 		for _, arm := range state.Arms {
 			assert.NotEqual(t, arm.TriesCount, 0.0)
+		}
+	})
+
+	t.Run("Banner with same stats were showed minimum one time", func(t *testing.T) {
+		state := initStateWithDifferentArms()
+
+		selectedArms := make(map[int]int)
+
+		for i := 1; i <= 1000; i++ {
+			selectedID := UCB1(state)
+			selectedArms[selectedID]++
+
+			state.Arms[selectedID].Reward += 0.5
+			state.Arms[selectedID].TriesCount++
+		}
+
+		for _, arm := range selectedArms {
+			assert.NotEqual(t, arm, 0.0)
 		}
 	})
 }
@@ -186,6 +209,48 @@ func initStateWithEmptyArms() State {
 		Arm{
 			TriesCount:  0,
 			Reward: 0,
+		},
+	}
+
+	return State{
+		Arms: arms,
+		TotalCount: 0,
+	}
+}
+
+func initStateWithAmeArms() State {
+	arms := Arms{
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
+		},
+		Arm{
+			TriesCount:  10,
+			Reward: 10,
 		},
 	}
 

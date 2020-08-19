@@ -2,6 +2,7 @@ package repo
 
 import (
 	"log"
+	"time"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -33,8 +34,12 @@ func (repo *Repository) initDB(proConf *proConf.Configuration) {
 
 	db, err := gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
-		log.Fatal(err)
-		log.Fatal("connection failed")
+		time.Sleep(20*time.Second)
+		db, err = gorm.Open("mysql", config.FormatDSN())
+
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	db = db.Set("gorm:table_options", "ENGINE=InnoDB CHARSET=utf8")
 

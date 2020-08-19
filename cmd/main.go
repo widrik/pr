@@ -45,6 +45,7 @@ func main() {
 
 		return
 	}
+	print("Working...")
 }
 
 func initRepository(configuration *config.Configuration) *repo.Repository {

@@ -1,5 +1,23 @@
 # Сервис управления ротации баннеров
 
+### Необходимые настройки
+- Создать и положить в корень файл .env
+```$xslt
+GRPC_PORT=8000
+AMQP_HOST=localhost
+AMQP_PORT=5672
+AMQP_LOGIN=test
+AMQP_PASSWORD=test
+AMQP_VHOST=/
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=test
+DB_USER=test
+DB_PASSWORD=test
+```
+- Продублировать его в папку /test (для корректного прохождения тестов)
+
+
 # ТЗ на сервис "Ротация баннеров"
 
 ## Общее описание

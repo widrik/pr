@@ -1,12 +1,11 @@
 FROM golang:latest as builder
 
 WORKDIR /pr
+ENV APP_ROOT /pr
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
-
 COPY . .
-ENV APP_ROOT /pr/
 RUN make build
 
 FROM alpine:3.11
