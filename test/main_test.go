@@ -18,6 +18,9 @@ import (
 const delay = 5 * time.Second
 
 func TestMain(m *testing.M) {
+	log.Printf("wait %s for service will be available...", delay)
+	time.Sleep(delay)
+
 	// Проверка конфига
 	configuration, err := config.Init()
 	if err != nil {
