@@ -22,7 +22,7 @@ lint: install-deps
 .PHONY: build test
 
 build:
-	CGO_ENABLED=0 go build -o bin cmd/main.go
+	CGO_ENABLED=0 go build -o bin/pr cmd/main.go
 
 build-dev:
 	go build -o bin/pr cmd/main.go
@@ -34,4 +34,4 @@ install:
 	go install
 
 run-prod:
-	docker-compose -f config/docker-compose.yml up
+	docker-compose -f docker-compose.yml up
