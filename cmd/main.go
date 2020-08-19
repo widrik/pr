@@ -30,6 +30,7 @@ func main() {
 	}()
 	defer grpcServer.Stop()
 
+	print("Working...")
 	signalsCh := make(chan os.Signal, 1)
 	signal.Notify(signalsCh, os.Interrupt, syscall.SIGTERM)
 
@@ -45,7 +46,6 @@ func main() {
 
 		return
 	}
-	print("Working...")
 }
 
 func initRepository(configuration *config.Configuration) *repo.Repository {

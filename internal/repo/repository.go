@@ -34,7 +34,7 @@ func (repo *Repository) initDB(proConf *proConf.Configuration) {
 
 	db, err := gorm.Open("mysql", config.FormatDSN())
 	if err != nil {
-		time.Sleep(20*time.Second)
+		time.Sleep(20 * time.Second)
 		db, err = gorm.Open("mysql", config.FormatDSN())
 
 		if err != nil {
