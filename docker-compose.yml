@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  rotator:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - "db"
+    ports:
+      - 4445:4445
+    env_file:
+      - .env
+    environment:
+      GRPC_PORT: ${GRPC_PORT:-6565}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE:-rotator}
+      DB_PASSWORD: ${DB_PASSWORD:-katya5678}
+      DB_USER: ${DB_USER:-root}
+      AMQP_HOST: ${AMQP_HOST:-rabbitmq}
+      AMQP_PORT: ${AMQP_PORT:-5672}
+      AMQP_LOGIN: ${AMQP_LOGIN}
+      AMQP_PASSWORD: ${AMQP_PASSWORD}
+      AMQP_VHOST: ${AMQP_VHOST:-/}
+    command: "/pr/bin/pr"
+    networks:
+      - internal
+    volumes:
+      - ./.env:/.env:ro
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./db/data:/var/lib/mysql:cached
+    environment:
+      - MYSQL_ROOT_PASSWORD=katya5678
+      - MYSQL_DATABASE=rotator
+      - MYSQL_USER=root
+      - DB_PASSWORD=katya5678
+    networks:
+      - internal
+networks:
+  internal:
+    external: false

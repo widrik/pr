@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+message AddRequest {
+    uint32 banner_id = 1;
+    uint32 slot_id = 2;
+}
+
+message AddResponse {
+}
+
+message DeleteRequest {
+    uint32 banner_id = 1;
+    uint32 slot_id = 2;
+}
+
+message DeleteResponse {
+}
+
+message HitRequest {
+    uint32 banner_id = 1;
+    uint32 slot_id = 2;
+    uint32 sdg_id = 3;
+}
+
+message HitResponse {
+}
+
+message GetRequest {
+    uint32 slot_id = 1;
+    uint32 sdg_id = 2;
+}
+
+message GetResponse {
+    uint32 banner_id = 1;
+}
+
+service RotationService {
+    rpc Add(AddRequest) returns (AddResponse) {};
+    rpc Delete(DeleteRequest) returns (DeleteResponse) {};
+    rpc Hit(HitRequest) returns (HitResponse) {};
+    rpc Get(GetRequest) returns (GetResponse) {};
+}
